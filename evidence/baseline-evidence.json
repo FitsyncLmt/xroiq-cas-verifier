@@ -1,0 +1,20 @@
+{
+  "system": "XROIQ CAS",
+  "baseline_version": "MVS-001 v0.5.1",
+  "source_zip_sha256": "4fba791f0e3ea6e03991514b5492e7b0f64f439047f8f2c85e09482d7a5b653d",
+  "clean_extraction_manifest_sha256": "294a25f523949531c54cdb7fcdd95c5fe2493ebed5403aa69e74ed4c454938ea",
+  "baseline_commit": "27833b122c082c973bc2446c29a73b8692522795",
+  "baseline_tree": "23e25d6b9d1929a1fd1387a45dcda73f9a3934d2",
+  "annotated_tag_sha": "773e5f21da09bf471e674ecd0a698ed4780e7db9",
+  "workflow_commit": "1b3e241261621460d9ec19732a5b4b59bddd5796",
+  "ci_configuration_sha256": "974cc30d81b95d14b39b5f49310c828033ceb63cd8a3f0578364552f33aa0d93",
+  "ci_run_url": "https://github.com/FitsyncLmt/xroiq-cas-core/actions/runs/29196020289",
+  "tests": {
+    "passed": 72,
+    "failed": 0
+  },
+  "frozen_path_negative_tamper_test": "PASS",
+  "scope": "A1 local/test/shadow only",
+  "production_deployment": "PROHIBITED",
+  "high_consequence_autonomy": "PROHIBITED"
+}
