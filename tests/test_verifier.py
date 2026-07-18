@@ -69,6 +69,32 @@ def test_git_ids_must_be_lowercase_40_hex(field: str) -> None:
         verify_evidence.validate_evidence(data)
 
 
+@pytest.mark.parametrize(
+    "field",
+    [
+        "source_zip_sha256",
+        "clean_extraction_manifest_sha256",
+        "ci_configuration_sha256",
+    ],
+)
+def test_well_formed_sha256_substitution_is_rejected(field: str) -> None:
+    data = valid_evidence()
+    data[field] = "0" * 64
+    with pytest.raises(verify_evidence.EvidenceError):
+        verify_evidence.validate_evidence(data)
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["baseline_commit", "baseline_tree", "annotated_tag_sha", "workflow_commit"],
+)
+def test_well_formed_git_id_substitution_is_rejected(field: str) -> None:
+    data = valid_evidence()
+    data[field] = "0" * 40
+    with pytest.raises(verify_evidence.EvidenceError):
+        verify_evidence.validate_evidence(data)
+
+
 def test_test_totals_are_frozen() -> None:
     data = valid_evidence()
     data["tests"] = {"passed": 71, "failed": 1}
@@ -104,6 +130,7 @@ def test_missing_required_field_is_rejected() -> None:
         "https://example.com/FitsyncLmt/xroiq-cas-core/actions/runs/29196020289",
         "https://github.com/FitsyncLmt/other/actions/runs/29196020289",
         "https://github.com/FitsyncLmt/xroiq-cas-core/actions/runs/not-a-number",
+        "https://github.com/FitsyncLmt/xroiq-cas-core/actions/runs/99999999999",
     ],
 )
 def test_ci_url_is_strictly_scoped(url: str) -> None:
