@@ -20,6 +20,20 @@ EXPECTED_VALUES = {
     "high_consequence_autonomy": "PROHIBITED",
 }
 
+FROZEN_IDENTIFIERS = {
+    "source_zip_sha256": "4fba791f0e3ea6e03991514b5492e7b0f64f439047f8f2c85e09482d7a5b653d",
+    "clean_extraction_manifest_sha256": "294a25f523949531c54cdb7fcdd95c5fe2493ebed5403aa69e74ed4c454938ea",
+    "baseline_commit": "27833b122c082c973bc2446c29a73b8692522795",
+    "baseline_tree": "23e25d6b9d1929a1fd1387a45dcda73f9a3934d2",
+    "annotated_tag_sha": "773e5f21da09bf471e674ecd0a698ed4780e7db9",
+    "workflow_commit": "1b3e241261621460d9ec19732a5b4b59bddd5796",
+    "ci_configuration_sha256": "974cc30d81b95d14b39b5f49310c828033ceb63cd8a3f0578364552f33aa0d93",
+}
+
+EXPECTED_CI_RUN_URL = (
+    "https://github.com/FitsyncLmt/xroiq-cas-core/actions/runs/29196020289"
+)
+
 SHA256_FIELDS = {
     "source_zip_sha256",
     "clean_extraction_manifest_sha256",
@@ -115,12 +129,16 @@ def validate_evidence(data: dict[str, Any]) -> list[str]:
         value = data.get(field)
         if not isinstance(value, str) or not HEX_64.fullmatch(value):
             raise EvidenceError(f"{field} must be a lowercase 64-character SHA-256 value.")
+        if value != FROZEN_IDENTIFIERS[field]:
+            raise EvidenceError(f"{field} does not match the frozen public baseline.")
         checks.append(f"{field}: OK")
 
     for field in sorted(GIT_SHA_FIELDS):
         value = data.get(field)
         if not isinstance(value, str) or not HEX_40.fullmatch(value):
             raise EvidenceError(f"{field} must be a lowercase 40-character Git object ID.")
+        if value != FROZEN_IDENTIFIERS[field]:
+            raise EvidenceError(f"{field} does not match the frozen public baseline.")
         checks.append(f"{field}: OK")
 
     tests = data.get("tests")
@@ -137,6 +155,8 @@ def validate_evidence(data: dict[str, Any]) -> list[str]:
     checks.append("tests: OK")
 
     _validate_url(data.get("ci_run_url"))
+    if data["ci_run_url"] != EXPECTED_CI_RUN_URL:
+        raise EvidenceError("ci_run_url does not match the frozen public baseline.")
     checks.append("ci_run_url: OK")
 
     return checks
